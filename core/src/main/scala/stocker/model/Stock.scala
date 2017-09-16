@@ -1,17 +1,8 @@
 package stocker.model
 
 /**
-  * Created by marcin on 9/25/16.
+  * Created by marcin1 on 9/1/17.
   */
-case class Stock(
-                        symbol: String,
-                        companyName: String,
-                        exchange: String,
-                        sector: String,
-                        industry: String,
-                        lastChecked: String,
-                        active: Boolean)
-
-
-
-
+case class Stock(symbol: String, exchange: String) extends Ordered[Stock] {
+    def compare(that: Stock) = this.symbol compare that.symbol
+}

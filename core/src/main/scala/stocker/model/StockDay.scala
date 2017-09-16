@@ -3,7 +3,7 @@ package stocker.model
 /**
   * Created by marcin on 10/2/16.
   */
-case class StockData(
+case class StockDay(
                             symbol: String,
                             exchange: String,
                             date: String,
@@ -11,7 +11,7 @@ case class StockData(
                             close: Double,
                             low: Double,
                             high: Double,
-                            volume: Integer) extends Ordered[StockData] {
+                            volume: Integer) extends Ordered[StockDay] {
 
-    def compare(that: StockData): Int = this.date compare that.date
+    def compare(that: StockDay): Int = this.date compare that.date
 }

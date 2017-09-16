@@ -1,6 +1,6 @@
 package stocker.transform
 
-import stocker.model.{StockData, StockValue}
+import stocker.model.{StockDay, StockValue}
 
 import scala.collection.mutable
 

@@ -5,19 +5,13 @@ lazy val commonSettings = Seq(
     scalaVersion := "2.11.8"
 )
 
-lazy val root = (project in file(".")).
-        settings(commonSettings: _*).
-        settings(
-            name := "stocker"
-        ).
-        dependsOn(core, app, updater)
-
 lazy val core = (project in file("core")).
         settings(commonSettings: _*).
         settings(
             name := "stocker-core",
             libraryDependencies ++= coreDeps
-        )
+        ).
+        dependsOn(util)
 
 lazy val app = (project in file("app")).
         settings(commonSettings: _*).
@@ -25,7 +19,22 @@ lazy val app = (project in file("app")).
             name := "stocker-app",
             libraryDependencies ++= appDeps
         ).
-        dependsOn(core)
+        dependsOn(core, util)
+
+lazy val portfolio = (project in file("portfolio")).
+        settings(commonSettings: _*).
+        settings(
+            name := "stocker-portfolio",
+            libraryDependencies ++= portfolioDeps
+        ).
+        dependsOn(core, util)
+
+lazy val scraper = (project in file("scraper")).
+        settings(commonSettings: _*).
+        settings(
+            name := "stocker-scraper"
+        ).
+        dependsOn(core, util)
 
 lazy val updater = (project in file("updater")).
         settings(commonSettings: _*).
@@ -33,4 +42,11 @@ lazy val updater = (project in file("updater")).
             name := "stocker-updater",
             libraryDependencies ++= updaterDeps
         ).
-        dependsOn(core)
+        dependsOn(core, util)
+
+lazy val util = (project in file("util")).
+        settings(commonSettings: _*).
+        settings(
+            name := "stocker-util",
+            libraryDependencies ++= utilDeps
+        )

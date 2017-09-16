@@ -9,17 +9,19 @@
 ## TODO:
 - specify which fields to analyze by ES
 - stores should be able to remove stock from list and day data
-- stores should be able to iterate over entire result set in batches 
+- stores should be able to iterate over entire result set in batches
 - stores read methods should return iterators
 
 ## Jobs
-- we need to store job records. Information we need should be name, 
+- we need to store job records. Information we need should be name,
     input data and output data
 
 ## Resources
 https://www.google.com/finance/historical?cid=12607212&startdate=Jan+1%2C+2010&enddate=Sep+25%2C+2016&num=30&ei=1NrnV5nTNceae-2tuugC
 https://www.google.com/finance/historical?q=TSLA&startdate=Jan+1%2C+2010&enddate=Sep+25%2C+2016
 http://www.quantshare.com/sa-43-10-ways-to-download-historical-stock-quotes-data-for-free
+
+https://www.alphavantage.co/#page-top
 
 # ES mappings
 
@@ -38,6 +40,17 @@ ES.client.execute {
             "low" typed DoubleType,
             "high" typed DoubleType,
             "volume" typed StringType
+        )
+    )
+} await
+
+ES.client.execute {
+    create index "stock_data_instant" shards 3 replicas 0 mappings (
+        "instant" as (
+            "symbol" typed StringType index NotAnalyzed omitNorms true,
+            "exchange" typed StringType index NotAnalyzed omitNorms true,
+            "dateTime" typed DateType,
+            "value" typed DoubleType
         )
     )
 } await

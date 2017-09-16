@@ -4,7 +4,7 @@ import java.util.concurrent.Executors
 
 import org.apache.log4j.Logger
 import org.joda.time.{LocalDate, LocalTime}
-import stocker.model.Stock
+import stocker.model.StockDetails
 import stocker.source.StockDataSource
 import stocker.store._
 import stocker.util.DateUtil
@@ -29,7 +29,7 @@ import scala.util.{Success, Try}
 
 object StockUpdater {
     val logger = Logger.getLogger(getClass.getName)
-    val queue = mutable.Queue[Stock]()
+    val queue = mutable.Queue[StockDetails]()
     val executeTime = new LocalTime(16, 0, 0)
     val interval = 1 * 60 // seconds
     val concurrency = 4
@@ -58,7 +58,7 @@ object StockUpdater {
         // e.g. NASDAQ:TSLA,NASDAQ:MSFT
         val userStocks = Try(args(0)).toOption
 
-        val stocks: List[Stock] = userStocks match {
+        val stocks: List[StockDetails] = userStocks match {
             case Some(x) => (for ( stock <- x.toString.split(",")) yield {
                 val pair = stock.split(":")
                 stockStore.find(pair(1), pair(0)) match {

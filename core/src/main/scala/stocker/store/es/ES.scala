@@ -1,4 +1,4 @@
-package stocker.store
+package stocker.store.es
 
 import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri}
 import stocker.StockerConfig

@@ -1,23 +1,23 @@
 package stocker.store
 
 import org.joda.time.LocalDate
-import stocker.model.Stock
-import stocker.store.impl.StockStoreES
+import stocker.model.StockDetails
+import stocker.store.es.StockStoreES
 
 /**
   * Created by marcin on 9/25/16.
   */
 trait StockStore {
 
-    def getMany(start: Int, offset: Int): List[Stock]
+    def getMany(start: Int, offset: Int): List[StockDetails]
 
-    def getManyBeforeDate(start: Int, offset: Int, checkedDate: LocalDate): List[Stock]
+    def getManyBeforeDate(start: Int, offset: Int, checkedDate: LocalDate): List[StockDetails]
 
-    def find(name: String, exchange: String): Option[Stock]
+    def find(name: String, exchange: String): Option[StockDetails]
 
     def updateChecked(name: String, exchange: String, date: LocalDate): Unit
 
-    def add(stock: Stock): Unit
+    def add(stock: StockDetails): Unit
 }
 
 object StockStore {

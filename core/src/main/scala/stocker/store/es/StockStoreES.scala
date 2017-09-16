@@ -1,12 +1,10 @@
-package stocker.store.impl
+package stocker.store.es
 
-import stocker.model.{Stock, StockData}
-import stocker.store.StockStore
-import stocker.store.{ES, StockDataStore}
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.{HitAs, RichSearchHit}
-import org.elasticsearch.search.sort.SortOrder
 import org.joda.time.LocalDate
+import stocker.model.StockDetails
+import stocker.store.StockStore
 import stocker.util.DateUtil
 
 /**
@@ -16,9 +14,9 @@ class StockStoreES extends StockStore {
 
     // Convert ES hit into model object
     // https://github.com/sksamuel/elastic4s#search-conversion
-    implicit object StockHitAs extends HitAs[Stock] {
-        override def as(hit: RichSearchHit): Stock = {
-            Stock(
+    implicit object StockHitAs extends HitAs[StockDetails] {
+        override def as(hit: RichSearchHit): StockDetails = {
+            StockDetails(
                 hit.sourceAsMap("symbol").toString,
                 hit.sourceAsMap("companyName").toString,
                 hit.sourceAsMap("exchange").toString,
@@ -30,7 +28,7 @@ class StockStoreES extends StockStore {
         }
     }
 
-    def getMany(start: Int, offset: Int): List[Stock] = {
+    def getMany(start: Int, offset: Int): List[StockDetails] = {
         val res = ES.client.execute { search in "stocks" / "stock" query {
             bool {
                 must (
@@ -40,9 +38,9 @@ class StockStoreES extends StockStore {
         } start start limit offset } await
 
         if (res.hits.size > 0) {
-            res.as[Stock].toList
+            res.as[StockDetails].toList
         } else {
-            List[Stock]()
+            List[StockDetails]()
         }
     }
 
@@ -59,14 +57,14 @@ class StockStoreES extends StockStore {
         } start start limit offset } await
 
         if (res.hits.size > 0) {
-            res.as[Stock].toList
+            res.as[StockDetails].toList
         } else {
-            List[Stock]()
+            List[StockDetails]()
         }
 
     }
 
-    def find(symbol: String, exchange: String): Option[Stock] = {
+    def find(symbol: String, exchange: String): Option[StockDetails] = {
         val res = ES.client.execute {
             search in "stocks" / "stock" query {
                 bool {
@@ -80,7 +78,7 @@ class StockStoreES extends StockStore {
 
         if (res.hits.size == 1) {
             val hit = res.hits(0)
-            Some(res.as[Stock].head)
+            Some(res.as[StockDetails].head)
         } else if (res.hits.size > 1) {
             throw new Exception("Expected none or only 1 result, found more.")
 
@@ -97,7 +95,7 @@ class StockStoreES extends StockStore {
         } await
     }
 
-    def add(stock: Stock): Unit = {
+    def add(stock: StockDetails): Unit = {
         ES.client.execute {
             index into "stocks" / "stock" id s"${stock.exchange}:${stock.symbol}" fields (
                     "symbol" -> stock.symbol,

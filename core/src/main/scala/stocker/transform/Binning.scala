@@ -1,12 +1,12 @@
 package stocker.transform
 
-import stocker.model.StockData
+import stocker.model.StockDay
 
 /**
   * Created by marcin on 10/4/16.
   */
 object Binning {
-    def apply(num: Int, data: Seq[StockData]) = {
+    def apply(num: Int, data: Seq[StockDay]) = {
         require(data.size >= num, "data size must be greater than bin size")
 
         val bins = math.round(data.size / num.toDouble).toInt

@@ -1,0 +1,9 @@
+storage.ES.host = "localhost"
+storage.ES.port = 9300
+
+storage.mysql.host = "localhost"
+storage.mysql.port = ""
+storage.mysql.user = ""
+storage.mysql.pass = ""
+
+storage.alpha.key = ""

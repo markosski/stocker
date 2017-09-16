@@ -1,11 +1,11 @@
-package stocker.store.impl
+package stocker.store.es
 
-import stocker.model.{Stock, StockData}
-import stocker.store.{ES, StockDataStore}
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.{HitAs, RichSearchHit}
 import org.elasticsearch.search.sort.SortOrder
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.LocalDate
+import stocker.model.StockDay
+import stocker.store.StockDataStore
 import stocker.util.DateUtil
 
 
@@ -16,9 +16,9 @@ class StockDataStoreES extends StockDataStore {
 
     // Convert ES hit into model object
     // https://github.com/sksamuel/elastic4s#search-conversion
-    implicit object StockDataHitAs extends HitAs[StockData] {
-        override def as(hit: RichSearchHit): StockData = {
-            StockData(
+    implicit object StockDataHitAs extends HitAs[StockDay] {
+        override def as(hit: RichSearchHit): StockDay = {
+            StockDay(
                 hit.sourceAsMap("symbol").toString,
                 hit.sourceAsMap("exchange").toString,
                 hit.sourceAsMap("date").toString,
@@ -31,7 +31,7 @@ class StockDataStoreES extends StockDataStore {
         }
     }
 
-    def add(data: StockData) = {
+    def add(data: StockDay) = {
 
         ES.client.execute {
             index into "stock_data" / "day" id s"${data.exchange}:${data.symbol}:${data.date}" fields (
@@ -61,9 +61,9 @@ class StockDataStoreES extends StockDataStore {
         } await
 
         if (res.hits.size > 0) {
-            res.as[StockData].toList
+            res.as[StockDay].toList
         } else {
-            List[StockData]()
+            List[StockDay]()
         }
     }
 
@@ -80,7 +80,7 @@ class StockDataStoreES extends StockDataStore {
         } await
 
         if (res.hits.size == 1) {
-            Some(res.as[StockData].head)
+            Some(res.as[StockDay].head)
         } else {
             None
         }

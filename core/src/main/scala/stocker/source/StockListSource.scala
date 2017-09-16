@@ -7,7 +7,7 @@ import stocker.source.impl.StockListSourceNasdaq
   * Created by marcin on 9/27/16.
   */
 abstract class StockListSource {
-    def getAll(exchange: String): Seq[Stock]
+    def getAll(exchange: String): Seq[StockDetails]
 }
 
 object StockListSource {

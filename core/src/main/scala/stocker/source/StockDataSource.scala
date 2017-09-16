@@ -1,7 +1,7 @@
 package stocker.source
 
 import org.joda.time.LocalDate
-import stocker.model.StockData
+import stocker.model.StockDay
 import stocker.source.impl.StockDataSourceGoogle
 
 /**
@@ -9,9 +9,9 @@ import stocker.source.impl.StockDataSourceGoogle
   */
 abstract class StockDataSource {
 
-    def getRecentData(symbol: String, exchange: String, from: LocalDate): List[StockData]
+    def getRecentData(symbol: String, exchange: String, from: LocalDate): List[StockDay]
 
-    def getAllTimeData(symbol: String, exchange: String): List[StockData]
+    def getAllTimeData(symbol: String, exchange: String): List[StockDay]
 
 }
 

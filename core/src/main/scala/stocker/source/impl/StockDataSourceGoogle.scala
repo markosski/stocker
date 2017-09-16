@@ -6,7 +6,7 @@ import java.util.Date
 import org.joda.time.{DateTime, LocalDate}
 import org.apache.log4j.Logger
 import org.joda.time.format.DateTimeFormat
-import stocker.model.StockData
+import stocker.model.StockDay
 import stocker.source.StockDataSource
 import stocker.util.DateUtil
 
@@ -42,7 +42,7 @@ class StockDataSourceGoogle extends StockDataSource {
       * @param symbol, Name of ticker
       * @param startDate, Start date
       */
-    def getRecentData(symbol: String, exchange: String, startDate: LocalDate = new LocalDate().minusDays(5)): List[StockData] = {
+    def getRecentData(symbol: String, exchange: String, startDate: LocalDate = new LocalDate().minusDays(5)): List[StockDay] = {
         val endDate = new LocalDate
         val url = buildUrl(symbol, exchange, startDate, endDate)
 
@@ -51,7 +51,7 @@ class StockDataSourceGoogle extends StockDataSource {
 
         resp.asString.body.toString.split("\\n").tail.
                 map(x => x.split(",")).
-                map(x => StockData(
+                map(x => StockDay(
                         symbol,
                         exchange,
                         DateUtil.ISODateFormat.print(sourceDateFormat.parseLocalDate(x(0))),
@@ -69,7 +69,7 @@ class StockDataSourceGoogle extends StockDataSource {
       *
       * @param symbol, Name of ticker
       */
-    def getAllTimeData(symbol: String, exchange: String): List[StockData] = {
+    def getAllTimeData(symbol: String, exchange: String): List[StockDay] = {
         getRecentData(symbol, exchange, new LocalDate(2000, 1, 1))
     }
 }

@@ -1,7 +1,7 @@
 package stocker.source.impl
 
 import org.joda.time.LocalDate
-import stocker.model.Stock
+import stocker.model.StockDetails
 import stocker.source.StockListSource
 import stocker.util.DateUtil
 
@@ -20,7 +20,7 @@ class StockListSourceNasdaq extends StockListSource {
 
         resp.asString.body.toString.split("\\n").tail.
                 map(x => x.split("\",")).
-                map(x => Stock(
+                map(x => StockDetails(
                     x(0).replaceAll("\"", ""),
                     x(1).replaceAll("\"", ""),
                     exchange,
