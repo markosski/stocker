@@ -1,6 +1,5 @@
-package updater
+package stocker.updater
 
-import org.apache.log4j.Logger
 import stocker.source.StockListSource
 import stocker.store.StockStore
 
@@ -16,11 +15,8 @@ import stocker.store.StockStore
   * - stamp record with date
   */
 object StockListUpdater extends App {
-    val logger = Logger.getLogger("stocker")
-
     val stockStore = StockStore.getInstance
     val tickerList = StockListSource.getInstance
 
-    logger.info("Working on NASDAQ")
     for (ticker <- tickerList.getAll("NASDAQ")) stockStore.add(ticker)
 }

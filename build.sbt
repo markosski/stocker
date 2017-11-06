@@ -29,10 +29,10 @@ lazy val portfolio = (project in file("portfolio")).
         ).
         dependsOn(core, util)
 
-lazy val scraper = (project in file("scraper")).
+lazy val scanner = (project in file("scanner")).
         settings(commonSettings: _*).
         settings(
-            name := "stocker-scraper"
+            name := "stocker-scanner"
         ).
         dependsOn(core, util)
 

@@ -1,4 +1,4 @@
-package updater
+package stocker.updater
 
 import java.util.{Timer, TimerTask}
 

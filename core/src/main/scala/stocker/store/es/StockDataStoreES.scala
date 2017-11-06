@@ -1,13 +1,12 @@
 package stocker.store.es
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.{HitAs, RichSearchHit}
+import com.sksamuel.elastic4s.{HitReader, Hit}
 import org.elasticsearch.search.sort.SortOrder
 import org.joda.time.LocalDate
 import stocker.model.StockDay
 import stocker.store.StockDataStore
 import stocker.util.DateUtil
-
 
 /**
   * Created by marcin on 9/26/16.
@@ -16,17 +15,19 @@ class StockDataStoreES extends StockDataStore {
 
     // Convert ES hit into model object
     // https://github.com/sksamuel/elastic4s#search-conversion
-    implicit object StockDataHitAs extends HitAs[StockDay] {
-        override def as(hit: RichSearchHit): StockDay = {
-            StockDay(
-                hit.sourceAsMap("symbol").toString,
-                hit.sourceAsMap("exchange").toString,
-                hit.sourceAsMap("date").toString,
-                hit.sourceAsMap("open").toString.toDouble,
-                hit.sourceAsMap("close").toString.toDouble,
-                hit.sourceAsMap("low").toString.toDouble,
-                hit.sourceAsMap("high").toString.toDouble,
-                hit.sourceAsMap("volume").toString.toInt
+    implicit object StockDataHitAs extends HitReader[StockDay] {
+        override def read(hit: Hit): Either[Throwable, StockDay] = {
+            Right(
+                StockDay(
+                  hit.sourceAsMap("symbol").toString,
+                  hit.sourceAsMap("exchange").toString,
+                  hit.sourceAsMap("date").toString,
+                  hit.sourceAsMap("open").toString.toDouble,
+                  hit.sourceAsMap("close").toString.toDouble,
+                  hit.sourceAsMap("low").toString.toDouble,
+                  hit.sourceAsMap("high").toString.toDouble,
+                  hit.sourceAsMap("volume").toString.toInt
+              )
             )
         }
     }
@@ -61,7 +62,7 @@ class StockDataStoreES extends StockDataStore {
         } await
 
         if (res.hits.size > 0) {
-            res.as[StockDay].toList
+            res.to[StockDay].toList
         } else {
             List[StockDay]()
         }
@@ -80,7 +81,7 @@ class StockDataStoreES extends StockDataStore {
         } await
 
         if (res.hits.size == 1) {
-            Some(res.as[StockDay].head)
+            Some(res.to[StockDay].head)
         } else {
             None
         }

@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import org.joda.time.{DateTime, LocalDate}
-import org.apache.log4j.Logger
+import org.slf4j.LoggerFactory
 import org.joda.time.format.DateTimeFormat
 import stocker.model.StockDay
 import stocker.source.StockDataSource
@@ -17,7 +17,7 @@ import scalaj.http._
   */
 class StockDataSourceGoogle extends StockDataSource {
 
-    private val logger = Logger.getLogger(getClass.getName)
+    private val logger = LoggerFactory.getLogger(getClass.getName)
 
     val sourceDateFormat = DateTimeFormat.forPattern("d-MMM-yy")
 
@@ -33,7 +33,7 @@ class StockDataSourceGoogle extends StockDataSource {
         val startDateFormatted = sourceDateFormat.print(startDate)
         val endDateFormatted = sourceDateFormat.print(endDate)
 
-        s"https://www.google.com/finance/historical?q=${exchange}:${symbol}&startdate=${startDateFormatted}&enddate=${endDateFormatted}&output=csv"
+        s"https://finance.google.com/finance/historical?q=${exchange}:${symbol}&startdate=${startDateFormatted}&enddate=${endDateFormatted}&output=csv"
     }
 
     /**

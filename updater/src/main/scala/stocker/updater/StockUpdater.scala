@@ -1,8 +1,8 @@
-package updater
+package stocker.updater
 
 import java.util.concurrent.Executors
 
-import org.apache.log4j.Logger
+import org.slf4j.LoggerFactory
 import org.joda.time.{LocalDate, LocalTime}
 import stocker.model.StockDetails
 import stocker.source.StockDataSource
@@ -28,7 +28,7 @@ import scala.util.{Success, Try}
   */
 
 object StockUpdater {
-    val logger = Logger.getLogger(getClass.getName)
+    val logger = LoggerFactory.getLogger(getClass.getName)
     val queue = mutable.Queue[StockDetails]()
     val executeTime = new LocalTime(16, 0, 0)
     val interval = 1 * 60 // seconds

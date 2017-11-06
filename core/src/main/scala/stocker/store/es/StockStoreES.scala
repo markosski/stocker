@@ -1,7 +1,7 @@
 package stocker.store.es
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.{HitAs, RichSearchHit}
+import com.sksamuel.elastic4s.{HitReader, Hit}
 import org.joda.time.LocalDate
 import stocker.model.StockDetails
 import stocker.store.StockStore
@@ -14,16 +14,18 @@ class StockStoreES extends StockStore {
 
     // Convert ES hit into model object
     // https://github.com/sksamuel/elastic4s#search-conversion
-    implicit object StockHitAs extends HitAs[StockDetails] {
-        override def as(hit: RichSearchHit): StockDetails = {
-            StockDetails(
-                hit.sourceAsMap("symbol").toString,
-                hit.sourceAsMap("companyName").toString,
-                hit.sourceAsMap("exchange").toString,
-                hit.sourceAsMap("sector").toString,
-                hit.sourceAsMap("industry").toString,
-                hit.sourceAsMap("lastChecked").toString,
-                hit.sourceAsMap("active").toString.toBoolean
+    implicit object StockHitAs extends HitReader[StockDetails] {
+        override def read(hit: Hit): Either[Throwable, StockDetails] = {
+            Right(
+                StockDetails(
+                  hit.sourceAsMap("symbol").toString,
+                  hit.sourceAsMap("companyName").toString,
+                  hit.sourceAsMap("exchange").toString,
+                  hit.sourceAsMap("sector").toString,
+                  hit.sourceAsMap("industry").toString,
+                  hit.sourceAsMap("lastChecked").toString,
+                  hit.sourceAsMap("active").toString.toBoolean
+              )
             )
         }
     }
@@ -38,12 +40,13 @@ class StockStoreES extends StockStore {
         } start start limit offset } await
 
         if (res.hits.size > 0) {
-            res.as[StockDetails].toList
+            res.to[StockDetails].toList
         } else {
             List[StockDetails]()
         }
     }
 
+    // FIX: this is broken
     def getManyBeforeDate(start: Int, offset:Int, checkedDate: LocalDate) = {
         val res = ES.client.execute { search in "stocks" / "stock" query {
             bool {
@@ -57,7 +60,7 @@ class StockStoreES extends StockStore {
         } start start limit offset } await
 
         if (res.hits.size > 0) {
-            res.as[StockDetails].toList
+            res.to[StockDetails].toList
         } else {
             List[StockDetails]()
         }
@@ -78,7 +81,7 @@ class StockStoreES extends StockStore {
 
         if (res.hits.size == 1) {
             val hit = res.hits(0)
-            Some(res.as[StockDetails].head)
+            Some(res.to[StockDetails].head)
         } else if (res.hits.size > 1) {
             throw new Exception("Expected none or only 1 result, found more.")
 

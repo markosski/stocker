@@ -2,8 +2,8 @@ package stocker.store.impl
 
 import stocker.model.{StockDetails, StockDay}
 import stocker.store.StockDataStore
-import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.{HitAs, RichSearchHit}
+//import com.sksamuel.elastic4s.ElasticDsl._
+//import com.sksamuel.elastic4s.{HitAs, RichSearchHit}
 import org.elasticsearch.search.sort.SortOrder
 import org.joda.time.{DateTime, LocalDate}
 import stocker.util.DateUtil

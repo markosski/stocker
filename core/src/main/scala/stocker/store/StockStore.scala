@@ -8,7 +8,6 @@ import stocker.store.es.StockStoreES
   * Created by marcin on 9/25/16.
   */
 trait StockStore {
-
     def getMany(start: Int, offset: Int): List[StockDetails]
 
     def getManyBeforeDate(start: Int, offset: Int, checkedDate: LocalDate): List[StockDetails]
